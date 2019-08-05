@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: jenkins
+  labels:
+    app: jenkins
+spec:
+  securityContext:
+    fsGroup: 1000
+  containers:
+    - name: jenkins
+      securityContext:
+        runAsUser: 1000
+      image: bobcrutchley/jenkins:latest
+      ports:
+      - containerPort: 27017
+      env:
+      - name: JENKINS_OPTS
+        value: "--prefix=/jenkins"
+      valueMounts:
+        - mountPath: "/var/jenkins_hone"
+          name: jenkins-home
+  volumes:
+    - name: jenkins-home
+      persistentVolumeClaim:
+        claimName: jenkins-home
